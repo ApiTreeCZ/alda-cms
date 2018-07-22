@@ -1,0 +1,15 @@
+{
+  "name": "@apitree/alda-cms",
+  "version": "0.1.0-alpha.1",
+  "description": "CMS System",
+  "author": "ApiTree",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ApiTreeCZ/alda-cms.git"
+  },
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/ApiTreeCZ/alda-cms/issues"
+  },
+  "homepage": "https://github.com/ApiTreeCZ/alda-cms#readme"
+}
