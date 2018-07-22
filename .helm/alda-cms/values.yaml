@@ -1,0 +1,12 @@
+replicaCount: 2
+
+domain:
+
+image:
+  repositoryUrl:
+  tag:
+  pullSecrets:
+    server:
+    username:
+    password:
+    email:
