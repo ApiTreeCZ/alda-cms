@@ -11,3 +11,7 @@ local-files/
 
 /graphql.schema.graphql
 /graphql.schema.json
+
+client/Lang.ts
+lang/en.json
+types/graphql.d.ts

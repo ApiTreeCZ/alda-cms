@@ -1,0 +1,23 @@
+{
+    "presets": [
+        "next/babel",
+        "@zeit/next-typescript/babel"
+    ],
+    "env": {
+        "development": {
+            "plugins": [
+                "react-intl"
+            ]
+        },
+        "production": {
+            "plugins": [
+                [
+                    "react-intl",
+                    {
+                        "messagesDir": "lang/.messages/"
+                    }
+                ]
+            ]
+        }
+    }
+}
