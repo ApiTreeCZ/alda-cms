@@ -1,15 +1,15 @@
 import * as React from 'react';
 import {ApolloConsumer} from 'react-apollo';
-import {withAuthAdmin} from '../../client/with';
+import {withAuthAdmin, WithAuthAdminProps} from '../../client/with';
 
-class Page extends React.Component<any> {
+class Page extends React.Component<WithAuthAdminProps> {
     render() {
-        const {logout} = this.props;
+        const {logout, loggedInUser} = this.props;
         return (
             <ApolloConsumer>
                 {(client) => (
                     <div>
-                        Hello {this.props.loggedInUser.me.firstName}!<br />
+                        Hello {loggedInUser.firstName}!<br />
                         <button onClick={logout(client)}>Sign out</button>
                     </div>
                 )}

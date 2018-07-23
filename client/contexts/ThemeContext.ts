@@ -2,7 +2,7 @@ import * as React from 'react';
 import {PaletteType} from '@material-ui/core';
 
 const getPaletteType = (): PaletteType => {
-    const defaultTheme: PaletteType = 'dark';
+    const defaultTheme: PaletteType = 'light';
     try {
         const find = localStorage.getItem('paletteType');
         if (find === null) {

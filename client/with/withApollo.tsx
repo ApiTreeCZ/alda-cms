@@ -1,6 +1,7 @@
 import * as React from 'react';
-import {NextDocumentContext} from 'next/document';
 import Head from 'next/head';
+import {AppComponentContext} from 'next/app';
+import {ApolloClient} from 'apollo-boost';
 import {getDataFromTree} from 'react-apollo';
 import * as cookie from 'cookie';
 import {initApollo} from './initApollo';
@@ -9,13 +10,13 @@ declare const process: any;
 
 const parseCookies = (req?: any, options = {}) => cookie.parse(req ? req.headers.cookie || '' : document.cookie, options);
 
-type AppType = React.ComponentClass<any> & {getInitialProps?: (ctx: NextDocumentContext) => any};
+type AppType = React.ComponentClass<any> & {getInitialProps?: (ctx: AppComponentContext) => any};
 
 export const withApollo = (App: AppType): React.ComponentClass<any> => {
     return class PageWithApollo extends React.Component<any> {
-        private apolloClient: any;
+        private readonly apolloClient: any;
 
-        static async getInitialProps(ctx: any) {
+        static async getInitialProps(ctx: AppComponentContext & {ctx: {apolloClient: ApolloClient<any>}}) {
             const {
                 Component,
                 router,
@@ -26,16 +27,13 @@ export const withApollo = (App: AppType): React.ComponentClass<any> => {
 
             ctx.ctx.apolloClient = apollo;
 
-            let appProps = {};
-            if (App.getInitialProps) {
-                appProps = await App.getInitialProps(ctx);
-            }
-
             if (res && res.finished) {
                 // When redirecting, the response is finished.
                 // No point in continuing to render
                 return {};
             }
+
+            const appProps = App.getInitialProps ? await App.getInitialProps(ctx) : {};
 
             // Run all graphql queries in the component tree
             // and extract the resulting data
@@ -55,12 +53,10 @@ export const withApollo = (App: AppType): React.ComponentClass<any> => {
                 Head.rewind();
             }
 
-            // Extract query data from the Apollo's store
-            const apolloState = apollo.cache.extract();
-
             return {
                 ...appProps,
-                apolloState,
+                // Extract query data from the Apollo's store
+                apolloState: apollo.cache.extract(),
             };
         }
 

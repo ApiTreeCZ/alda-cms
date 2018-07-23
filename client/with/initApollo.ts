@@ -13,7 +13,7 @@ if (!process.browser) {
     global.fetch = fetch;
 }
 
-const create = (initialState: any, {getToken}: any, req?: any) => {
+const create = (initialState: any, {getToken}: {getToken: () => string}, req?: any) => {
     const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
     const httpLink = createHttpLink({
         uri: `${baseUrl}/graphql`,
@@ -39,7 +39,7 @@ const create = (initialState: any, {getToken}: any, req?: any) => {
     });
 };
 
-export const initApollo = (initialState: any, options: any, req?: any) => {
+export const initApollo = (initialState: any, options: {getToken: () => string}, req?: any) => {
     // Make sure to create a new client for every server-side request so that data
     // isn't shared between connections (which would be bad)
     if (!process.browser) {
