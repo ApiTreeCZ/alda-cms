@@ -4,7 +4,7 @@ import gql from 'graphql-tag';
 import Router from 'next/router';
 import cookie from 'cookie';
 import {Account, Query} from '@graphql-model';
-import {NextDocumentContext} from 'next/document';
+import {DocumentProps, NextDocumentContext} from 'next/document';
 
 interface LoggedInUserResponse {
     readonly loggedInUser: Pick<Account, 'id' | 'firstName' | 'lastName'>;
@@ -49,7 +49,7 @@ export interface WithAuthAdminProps extends LoggedInUserResponse {
     readonly logout: (client: ApolloClient<any>) => () => Promise<void>;
 }
 
-export const withAuthAdmin = (BaseComponent: React.ComponentType<WithAuthAdminProps>) => {
+export const withAuthAdmin = (BaseComponent: React.ComponentType<WithAuthAdminProps> & {getInitialProps?(ctx: NextDocumentContext): DocumentProps}) => {
     return class extends React.Component<LoggedInUserResponse> {
         handleOnLogout = (apolloClient: ApolloClient<any>) => async () => {
             document.cookie = cookie.serialize('token', '', {
@@ -65,8 +65,8 @@ export const withAuthAdmin = (BaseComponent: React.ComponentType<WithAuthAdminPr
                 // If not signed in, send them somewhere more useful
                 await redirect('/login', context);
             }
-
-            return {loggedInUser};
+            const props = BaseComponent.getInitialProps ? await BaseComponent.getInitialProps(context) : {};
+            return {...props, loggedInUser};
         }
 
         render() {

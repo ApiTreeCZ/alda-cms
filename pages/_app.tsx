@@ -17,6 +17,14 @@ Router.onRouteChangeError = () => NProgress.done();
 const {Container, default: App} = require('next/app');
 
 class AldaApp extends App {
+    static async getInitialProps({Component, ctx}: any) {
+        return {
+            pageProps: {
+                ...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
+            },
+        };
+    }
+
     render() {
         const {Component, pageProps, apolloClient} = this.props;
         return (

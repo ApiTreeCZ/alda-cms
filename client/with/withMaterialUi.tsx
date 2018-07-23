@@ -1,7 +1,5 @@
 import {CssBaseline, MuiThemeProvider, PaletteType} from '@material-ui/core';
 import * as React from 'react';
-
-import {AppFrame} from '../components';
 import {paletteType, savePaletteType, ThemeContext, ThemeContextType} from '../contexts';
 import {PageContext, StylesContext} from '../styles/StylesContext';
 
@@ -56,11 +54,9 @@ export const withMaterialUi = (BaseComponent: React.ComponentClass & {getInitial
                 <JssProvider jss={jss} registry={sheetsRegistry} generateClassName={generateClassName}>
                     <MuiThemeProvider theme={theme} sheetsManager={sheetsManager}>
                         <CssBaseline />
-                        <AppFrame>
-                            <ThemeContext.Provider value={this.state}>
-                                <BaseComponent {...this.props} />
-                            </ThemeContext.Provider>
-                        </AppFrame>
+                        <ThemeContext.Provider value={this.state}>
+                            <BaseComponent {...this.props} />
+                        </ThemeContext.Provider>
                     </MuiThemeProvider>
                 </JssProvider>
             );

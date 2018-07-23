@@ -1,7 +1,8 @@
 import * as React from 'react';
+import {Layout} from '../../client/components';
 
 export default class extends React.Component {
     render() {
-        return <div>Login...</div>;
+        return <Layout>Login...</Layout>;
     }
 }

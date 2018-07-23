@@ -21,7 +21,7 @@ type ContextWithLocale = NextDocumentContext & {req: {locale: string; localeData
 
 export default class extends Document {
     static async getInitialProps({renderPage, req: {locale, localeDataScript}}: ContextWithLocale) {
-        const pageContext = StylesContext.getPageContext('dark');
+        const pageContext = StylesContext.getPageContext('light');
         const page = renderPage((Component: any) => (props) => (
             <JssProvider registry={pageContext.sheetsRegistry} generateClassName={pageContext.generateClassName}>
                 <Component pageContext={pageContext} {...props} />
