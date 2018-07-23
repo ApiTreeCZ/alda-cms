@@ -18,7 +18,7 @@
     "generate:graphql:json": "npm run generate:graphql:merge && apollo-codegen introspect-schema graphql.schema.graphql --output graphql.schema.json",
     "generate:graphql:typescript": "gql-gen --schema graphql.schema.json --template typescript --out ./types/graphql.d.ts",
     "prebuild": "rimraf -- dist .next",
-    "build": "npm run generate:graphql:json && npm run generate:graphql:typescript && next build && tsc --project tsconfig.server.json && npm run generate:lang",
+    "build": "npm run generate:graphql:json && npm run generate:graphql:typescript && npm run generate:lang && next build && tsc --project tsconfig.server.json",
     "start": "NODE_ENV=production node dist/index.js",
     "dev": "npm run generate:graphql:json && npm run generate:graphql:typescript && npm run generate:lang && nodemon server/index.ts",
     "debug": "node --inspect dist/index.js",
