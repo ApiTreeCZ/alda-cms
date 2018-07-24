@@ -8,7 +8,7 @@ const dir = './lang';
 const defaultLocale = 'en';
 
 // default Lang.ts file
-const defaultLangTsFile = './client/Lang.ts';
+const defaultLangTsFile = './shared/Lang.ts';
 
 const readMessages = (file: string) => JSON.parse(readFileSync(file, 'utf8'));
 const writeMessages = (file: string, content: any) => writeFileSync(file, JSON.stringify(content, null, 2));

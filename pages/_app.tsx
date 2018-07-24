@@ -7,11 +7,15 @@ import {withApollo, withIntl, withMaterialUi} from '../client/with';
 
 NProgress.configure({parent: '#loadingContent'});
 
-Router.onRouteChangeStart = (_) => {
+Router.events.on('routeChangeStart', () => {
     NProgress.start();
-};
-Router.onRouteChangeComplete = () => NProgress.done();
-Router.onRouteChangeError = () => NProgress.done();
+});
+Router.events.on('routeChangeComplete', () => {
+    NProgress.done();
+});
+Router.events.on('routeChangeError', () => {
+    NProgress.done();
+});
 
 // tslint:disable-next-line
 const {Container, default: App} = require('next/app');

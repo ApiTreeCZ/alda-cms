@@ -49,7 +49,7 @@ export interface WithAuthAdminProps extends LoggedInUserResponse {
     readonly logout: (client: ApolloClient<any>) => () => Promise<void>;
 }
 
-export const withAuthAdmin = (BaseComponent: React.ComponentType<WithAuthAdminProps> & {getInitialProps?(ctx: NextDocumentContext): DocumentProps}) => {
+export const withAdmin = (BaseComponent: React.ComponentType<WithAuthAdminProps> & {getInitialProps?(ctx: NextDocumentContext): DocumentProps}) => {
     return class extends React.Component<LoggedInUserResponse> {
         handleOnLogout = (apolloClient: ApolloClient<any>) => async () => {
             document.cookie = cookie.serialize('token', '', {

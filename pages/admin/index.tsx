@@ -1,7 +1,7 @@
 import * as React from 'react';
 import {ApolloConsumer} from 'react-apollo';
-import {withAuthAdmin, WithAuthAdminProps} from '../../client/with';
-import {Layout} from '../../client/components';
+import {withAdmin, WithAuthAdminProps} from '@client/with';
+import {Layout} from '@client/components';
 
 class Page extends React.Component<WithAuthAdminProps> {
     render() {
@@ -21,4 +21,4 @@ class Page extends React.Component<WithAuthAdminProps> {
     }
 }
 
-export default withAuthAdmin(Page);
+export default withAdmin(Page);

@@ -6,6 +6,8 @@ import * as IntlPolyfill from 'intl';
 import * as nextjs from 'next';
 import {basename} from 'path';
 
+// You cant use TS alias: https://github.com/Microsoft/TypeScript/issues/10866
+import {Lang} from '../shared/Lang';
 import {createApolloServer} from './graphql';
 
 // tslint:disable-next-line
@@ -37,7 +39,7 @@ const getLocaleDataScript = (locale: string) => {
 // We need to load and expose the translations on the request for the user's
 // locale. These will only be used in production, in dev the `defaultMessage` in
 // each message description in the source code will be used.
-const getMessages = (locale: string) => require(`../lang/${locale}.json`);
+const getMessages = (locale: string) => require(`../../lang/${locale}.json`);
 
 app.prepare().then(() => {
     const server = express();
@@ -68,6 +70,7 @@ app.prepare().then(() => {
             BUILD_DATE,
             K8S_NAMESPACE,
             DEPENDENCIES: dependencies,
+            LANG: Lang,
         });
     });
 

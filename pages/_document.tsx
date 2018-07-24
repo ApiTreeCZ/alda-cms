@@ -3,7 +3,7 @@ import Document, {Head, Main, NextDocumentContext, NextScript} from 'next/docume
 import postcss from 'postcss';
 import * as React from 'react';
 
-import {StylesContext} from '../client/styles/StylesContext';
+import {StylesContext} from '@client/styles/StylesContext';
 
 const prefixer = postcss([autoprefixer as any]);
 
