@@ -1,11 +1,10 @@
 import * as accepts from 'accepts';
 import * as express from 'express';
+import {basename} from 'path';
 import {readFileSync} from 'fs';
 import {sync} from 'glob';
 import * as IntlPolyfill from 'intl';
 import * as nextjs from 'next';
-import {basename} from 'path';
-
 // You cant use TS alias: https://github.com/Microsoft/TypeScript/issues/10866
 import {Lang} from '../shared/Lang';
 import {createApolloServer} from './graphql';
@@ -23,6 +22,8 @@ const handle = app.getRequestHandler();
 
 const languages = sync('./lang/*.json').map((f) => basename(f, '.json'));
 
+const rootDir = `..${dev ? '' : '/..'}`;
+
 // We need to expose React Intl's locale data on the request for the user's
 // locale. This function will also cache the scripts by lang in memory.
 const localeDataCache = new Map();
@@ -39,7 +40,7 @@ const getLocaleDataScript = (locale: string) => {
 // We need to load and expose the translations on the request for the user's
 // locale. These will only be used in production, in dev the `defaultMessage` in
 // each message description in the source code will be used.
-const getMessages = (locale: string) => require(`../../lang/${locale}.json`);
+const getMessages = (locale: string) => require(`${rootDir}/lang/${locale}.json`);
 
 app.prepare().then(() => {
     const server = express();
@@ -54,7 +55,7 @@ app.prepare().then(() => {
 
     server.get('/_info', (_, res) => {
         const {NODE_ENV, NODE_VERSION, LC_CTYPE, BACKEND_ENDPOINT, BUILD_AUTHOR, BUILD_NUM, BUILD_DATE, K8S_NAMESPACE} = process.env;
-        const {name, version, description, author, homepage, dependencies} = require('../package.json');
+        const {name, version, description, author, homepage, dependencies} = require(`${rootDir}/package.json`);
         res.json({
             NAME: name,
             DESCRIPTION: description,

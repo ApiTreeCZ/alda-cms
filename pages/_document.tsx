@@ -1,7 +1,7 @@
+import * as React from 'react';
 import autoprefixer from 'autoprefixer';
 import Document, {Head, Main, NextDocumentContext, NextScript} from 'next/document';
 import postcss from 'postcss';
-import * as React from 'react';
 
 import {StylesContext} from '@client/styles/StylesContext';
 

@@ -1,3 +1,4 @@
-import {UsersIndexPage} from '@client/admin/users/components/UsersIndexPage';
+import {withAdmin} from '@client/with';
+import {UsersIndexPage} from '@client/admin/users';
 
-export default UsersIndexPage;
+export default withAdmin(UsersIndexPage);

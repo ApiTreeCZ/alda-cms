@@ -1,21 +1,11 @@
+import * as React from 'react';
 import Router from 'next/router';
 import * as NProgress from 'nprogress';
-import * as React from 'react';
 import {ApolloProvider, compose} from 'react-apollo';
 
 import {withApollo, withIntl, withMaterialUi} from '../client/with';
 
 NProgress.configure({parent: '#loadingContent'});
-
-Router.events.on('routeChangeStart', () => {
-    NProgress.start();
-});
-Router.events.on('routeChangeComplete', () => {
-    NProgress.done();
-});
-Router.events.on('routeChangeError', () => {
-    NProgress.done();
-});
 
 // tslint:disable-next-line
 const {Container, default: App} = require('next/app');
@@ -27,6 +17,34 @@ class AldaApp extends App {
                 ...(Component.getInitialProps ? await Component.getInitialProps(ctx) : {}),
             },
         };
+    }
+
+    componentDidMount(): void {
+        if (Router.router) {
+            Router.router.events.on('routeChangeStart', () => {
+                NProgress.start();
+            });
+            Router.router.events.on('routeChangeComplete', () => {
+                NProgress.done();
+            });
+            Router.router.events.on('routeChangeError', () => {
+                NProgress.done();
+            });
+        }
+    }
+
+    componentWillUnmount(): void {
+        if (Router.router) {
+            Router.router.events.off('routeChangeStart', () => {
+                // nothing
+            });
+            Router.router.events.off('routeChangeComplete', () => {
+                // nothing
+            });
+            Router.router.events.off('routeChangeError', () => {
+                // nothing
+            });
+        }
     }
 
     render() {
