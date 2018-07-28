@@ -72,7 +72,7 @@ export const withAdmin = (BaseComponent: React.ComponentType<WithAdminProps> & {
         anchorEl?: EventTarget & HTMLElement;
     }
 
-    return class extends React.Component<LoggedInUserResponse, Readonly<State>> {
+    return class extends React.PureComponent<LoggedInUserResponse, Readonly<State>> {
         readonly state = initState;
 
         handleOnLogout = (apolloClient: ApolloClient<any>) => async () => {

@@ -13,7 +13,7 @@ export const withMaterialUi = (BaseComponent: React.ComponentClass & {getInitial
         readonly pageContext: PageContext;
     }
 
-    class Component extends React.Component<Props, State> {
+    class Component extends React.PureComponent<Props, State> {
         constructor(props: Props, context: any) {
             super(props, context);
             this.state = {

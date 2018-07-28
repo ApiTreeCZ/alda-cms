@@ -3,7 +3,7 @@ import Link from 'next/link';
 import {Typography} from '@material-ui/core';
 import {Layout} from '@client/components';
 
-export default class extends React.Component {
+export default class extends React.PureComponent {
     render() {
         return (
             <Layout>
