@@ -15,61 +15,56 @@ import {
     TextField,
     Typography,
 } from '../../../../node_modules/@material-ui/core';
-import MoreVertIcon from '@material-ui/icons/MoreVert';
-import DeleteIcon from '@material-ui/icons/Delete';
+import {MoreVert as MoreVertIcon, Delete as DeleteIcon} from '@material-ui/icons';
 
 interface Post {
     id: number;
     title: string;
-    timeAndDate: string;
+    createdAt: Date;
+    updatedAt: Date;
     content: string;
 }
 
-interface CreatePost extends Pick<Post, 'title' | 'content'> {}
+interface CreatePost extends Partial<Pick<Post, 'title' | 'content'>> {}
 
 interface State {
     posts: Post[];
     dialogOpened: boolean;
     currentPost: CreatePost;
     updating: boolean;
-    updatingId: number;
+    updatingId?: number;
 }
+
+const getFakeState = () => {
+    const result: Post[] = [
+        {
+            id: 1,
+            title: 'Post number one',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            content: 'This is my very first post. It should be about something, but I have absolutely no idea what about',
+        },
+        {
+            id: 2,
+            title: 'Very interesting post number two',
+            createdAt: new Date(),
+            updatedAt: new Date(),
+            content: 'This is not interesting as well. Im completly without ideas',
+        },
+    ];
+    return result;
+};
 
 export class PostsIndexPage extends React.Component<WithAdminProps, State> {
     constructor(props: WithAdminProps) {
         super(props);
         this.state = {
-            posts: this.getFakeState(),
+            posts: getFakeState(),
             dialogOpened: false,
-            currentPost: {title: '', content: ''},
+            currentPost: {},
             updating: false,
-            updatingId: -1,
         };
     }
-
-    getFakeState = () => {
-        const result: Post[] = [
-            {
-                id: 1,
-                title: 'Post number one',
-                timeAndDate: '10:00 25.07.2018',
-                content: 'This is my very first post. It should be about something, but I have absolutely no idea what about',
-            },
-            {
-                id: 2,
-                title: 'Very interesting post number two',
-                timeAndDate: '15:00 28.07.2018',
-                content: 'This is not interesting as well. Im completly without ideas',
-            },
-        ];
-        return result;
-    };
-
-    getTimeAndDateString = () => {
-        const now = new Date();
-        const str: string = `${now.getHours()}:${now.getMinutes()} ${now.getDate()}.${now.getMonth() + 1}.${now.getFullYear()}`;
-        return str;
-    };
 
     handleOnClickUpdate = (id: number) => () => {
         this.setState({updating: true});
@@ -104,23 +99,26 @@ export class PostsIndexPage extends React.Component<WithAdminProps, State> {
     handleSubmit = () => {
         if (this.state.updating) {
             this.setState({
-                posts: this.state.posts.filter((e) => {
-                    if (e.id !== this.state.updatingId) {
-                        return e;
-                    } else {
-                        e.title = this.state.currentPost.title;
-                        e.content = this.state.currentPost.content;
-                        return e;
-                    }
-                }),
+                posts: this.state.posts.map(
+                    (post) =>
+                        post.id === this.state.updatingId
+                            ? {
+                                  ...post,
+                                  title: this.state.currentPost.title === undefined ? '' : this.state.currentPost.title,
+                                  content: this.state.currentPost.content === undefined ? '' : this.state.currentPost.content,
+                                  updatedAt: new Date(),
+                              }
+                            : post,
+                ),
             });
         } else {
             const fooId: number = this.state.posts.length === 0 ? 0 : this.state.posts[this.state.posts.length - 1].id + 1;
             const foo: Post = {
                 id: fooId,
-                title: this.state.currentPost.title,
-                content: this.state.currentPost.content,
-                timeAndDate: this.getTimeAndDateString(),
+                title: this.state.currentPost.title === undefined ? '' : this.state.currentPost.title,
+                content: this.state.currentPost.content === undefined ? '' : this.state.currentPost.content,
+                createdAt: new Date(),
+                updatedAt: new Date(),
             };
             this.setState({
                 posts: [...this.state.posts, foo],
@@ -128,6 +126,13 @@ export class PostsIndexPage extends React.Component<WithAdminProps, State> {
         }
 
         this.handleOnClose();
+    };
+
+    printDate = (date: Date) => {
+        const str: string = `${date.getHours() < 10 ? '0' + date.getHours() : date.getHours()}:${
+            date.getMinutes() < 10 ? '0' + date.getMinutes() : date.getMinutes()
+        } ${date.getDate()}.${date.getMonth() + 1}.${date.getFullYear()}`;
+        return str;
     };
 
     render() {
@@ -141,7 +146,7 @@ export class PostsIndexPage extends React.Component<WithAdminProps, State> {
                 </Button>
                 {posts.map((post) => (
                     <Card style={{margin: 30}} key={post.id}>
-                        <CardHeader title={post.title} subheader={post.timeAndDate + ' id:' + post.id} />
+                        <CardHeader title={post.title} subheader={`Created: ${this.printDate(post.createdAt)} Updated: ${this.printDate(post.updatedAt)}`} />
                         <CardContent>
                             <Typography component="p">{post.content}</Typography>
                         </CardContent>
