@@ -25,26 +25,30 @@ interface Post {
     content: string;
 }
 
+interface CreatePost extends Pick<Post, 'title' | 'content'> {}
+
 interface State {
     posts: Post[];
     dialogOpened: boolean;
-    tempPost: Post;
+    currentPost: CreatePost;
     updating: boolean;
+    updatingId: number;
 }
 
 export class PostsIndexPage extends React.Component<WithAdminProps, State> {
-    constructor(props: any) {
+    constructor(props: WithAdminProps) {
         super(props);
         this.state = {
             posts: this.getFakeState(),
             dialogOpened: false,
-            tempPost: {id: -1, title: '', content: '', timeAndDate: ''},
+            currentPost: {title: '', content: ''},
             updating: false,
+            updatingId: -1,
         };
     }
 
     getFakeState = () => {
-        const temp: Post[] = [
+        const result: Post[] = [
             {
                 id: 1,
                 title: 'Post number one',
@@ -58,7 +62,7 @@ export class PostsIndexPage extends React.Component<WithAdminProps, State> {
                 content: 'This is not interesting as well. Im completly without ideas',
             },
         ];
-        return temp;
+        return result;
     };
 
     getTimeAndDateString = () => {
@@ -67,21 +71,21 @@ export class PostsIndexPage extends React.Component<WithAdminProps, State> {
         return str;
     };
 
-    handleOnClickUpdate = (id: any) => () => {
+    handleOnClickUpdate = (id: number) => () => {
         this.setState({updating: true});
         this.handleOnClickCreatePost();
         // @ts-ignore
-        const foo: Post = this.state.posts.find((e) => e.id === +id);
-        this.setState({tempPost: foo});
+        const foo: CreatePost = this.state.posts.find((e) => e.id === id);
+        this.setState({updatingId: id});
+        this.setState({currentPost: foo});
     };
 
     handleOnClickCreatePost = () => {
-        this.setState({dialogOpened: true});
-        this.setState({tempPost: {id: -1, title: '', content: '', timeAndDate: ''}});
+        this.setState({dialogOpened: true, currentPost: {title: '', content: ''}});
     };
 
-    handleOnClickDelete = (i: any) => () => {
-        this.setState({posts: this.state.posts.filter((e) => e.id !== +i)});
+    handleOnClickDelete = (id: number) => () => {
+        this.setState({posts: this.state.posts.filter((e) => e.id !== id)});
     };
 
     handleOnClose = () => {
@@ -89,36 +93,35 @@ export class PostsIndexPage extends React.Component<WithAdminProps, State> {
         this.setState({updating: false});
     };
 
-    handleTitleChange = (event: any) => {
-        this.setState({tempPost: {...this.state.tempPost, title: event.target.value}});
+    handleTitleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({currentPost: {...this.state.currentPost, title: event.target.value}});
     };
 
-    handleContentChange = (event: any) => {
-        this.setState({tempPost: {...this.state.tempPost, content: event.target.value}});
+    handleContentChange = (event: React.ChangeEvent<HTMLInputElement>) => {
+        this.setState({currentPost: {...this.state.currentPost, content: event.target.value}});
     };
 
     handleSubmit = () => {
         if (this.state.updating) {
-            const foo: Post = {
-                id: this.state.tempPost.id,
-                title: this.state.tempPost.title,
-                content: this.state.tempPost.content,
-                timeAndDate: this.getTimeAndDateString(),
-            };
             this.setState({
                 posts: this.state.posts.filter((e) => {
-                    if (e.id !== this.state.tempPost.id) {
+                    if (e.id !== this.state.updatingId) {
                         return e;
                     } else {
-                        e.title = foo.title;
-                        e.content = foo.content;
+                        e.title = this.state.currentPost.title;
+                        e.content = this.state.currentPost.content;
                         return e;
                     }
                 }),
             });
         } else {
             const fooId: number = this.state.posts.length === 0 ? 0 : this.state.posts[this.state.posts.length - 1].id + 1;
-            const foo: Post = {id: fooId, title: this.state.tempPost.title, content: this.state.tempPost.content, timeAndDate: this.getTimeAndDateString()};
+            const foo: Post = {
+                id: fooId,
+                title: this.state.currentPost.title,
+                content: this.state.currentPost.content,
+                timeAndDate: this.getTimeAndDateString(),
+            };
             this.setState({
                 posts: [...this.state.posts, foo],
             });
@@ -130,9 +133,9 @@ export class PostsIndexPage extends React.Component<WithAdminProps, State> {
     render() {
         const posts = this.state.posts;
         const dialogOpened = this.state.dialogOpened;
-        const tempPost = this.state.tempPost;
+        const tempPost = this.state.currentPost;
         return (
-            <div>
+            <div style={{marginBottom: 120}}>
                 <Button style={{margin: 30}} variant="contained" color="primary" onClick={this.handleOnClickCreatePost}>
                     Crate post
                 </Button>
