@@ -40,40 +40,13 @@ export const SimpleModal: React.SFC<Props> = ({firstName, lastName, email, phone
                         <Typography variant="title" id="modal-title">
                             Add new user to database
                         </Typography>
-                        <TextField
-                            id="name"
-                            label="First Name"
-                            value={firstName}
-                            //onChange={this.handleChange('name')}
-                            margin="normal"
-                            required
-                        />
+                        <TextField id="name" label="First Name" value={firstName} margin="normal" required />
                         <br />
-                        <TextField
-                            id="name"
-                            label="Last Name"
-                            value={lastName}
-                            //onChange={this.handleChange('name')}
-                            margin="normal"
-                            required
-                        />
+                        <TextField id="name" label="Last Name" value={lastName} margin="normal" required />
                         <br />
-                        <TextField
-                            id="name"
-                            label="E-mail"
-                            value={email}
-                            //onChange={this.handleChange('name')}
-                            margin="normal"
-                            required
-                        />
+                        <TextField id="name" label="E-mail" value={email} margin="normal" required />
                         <br />
-                        <TextField
-                            id="name"
-                            label="Phone Number"
-                            value={phoneNumber}
-                            //onChange={this.handleChange('name')}
-                            margin="normal"
-                        />
+                        <TextField id="name" label="Phone Number" value={phoneNumber} margin="normal" />
                         <br />
                         <Button variant="contained" color="primary" mini>
                             Primary
