@@ -3,14 +3,18 @@ import {Button, ClickAwayListener, Dialog, DialogActions, DialogContent, DialogC
 import {RemoveCircle} from '@material-ui/icons';
 import * as React from 'react';
 
-type CommentModel = string;
+interface CommentModel {
+    id: number;
+    author: string;
+    message: string;
+}
 
 interface State {
     comments: CommentModel[];
-    comment: CommentModel;
+    message: string;
     openAdd: boolean;
     openAlert: boolean;
-    alertIndex: number;
+    alertID: number;
 }
 
 interface MessagesProps {
@@ -19,23 +23,28 @@ interface MessagesProps {
 }
 
 const Messages = (props: MessagesProps): any =>
-    props.comments.map((text: any, index: number) => (
-        <div style={{padding: '15px 10%'}} key={index}>
-            <Paper elevation={5}>
-                <div style={{padding: '20px 20px 20px 20px'}}>
-                    {text}
-                    <div style={{float: 'right'}}>
-                        <IconButton onClick={props.openAlert(index)} aria-label="Delete">
-                            <RemoveCircle />
-                        </IconButton>
+    props.comments
+        .slice(0)
+        .reverse()
+        .map((comment: CommentModel, index: number) => (
+            <div style={{padding: '15px 10%'}} key={index}>
+                <Paper elevation={5}>
+                    <div style={{padding: '20px 20px 20px 20px'}}>
+                        <strong>{comment.author}:</strong>
+                        <br />
+                        {comment.message}
+                        <div style={{float: 'right'}}>
+                            <IconButton onClick={props.openAlert(comment.id)} aria-label="Delete">
+                                <RemoveCircle />
+                            </IconButton>
+                        </div>
                     </div>
-                </div>
-            </Paper>
-        </div>
-    ));
+                </Paper>
+            </div>
+        ));
 
 interface AddCommentProps {
-    comment: CommentModel;
+    message: string;
     handleChange: () => void;
     addComment: () => void;
 }
@@ -43,7 +52,7 @@ interface AddCommentProps {
 const AddComment = (props: AddCommentProps): any => (
     <Paper>
         <form style={{padding: '20px 30px'}} noValidate autoComplete="off">
-            <TextField name="comment" label="Comment here" autoFocus multiline fullWidth value={props.comment} onChange={props.handleChange} margin="normal" />
+            <TextField name="message" label="Comment here" autoFocus multiline fullWidth value={props.message} onChange={props.handleChange} margin="normal" />
             <div style={{paddingTop: '20px'}}>
                 <Button onClick={props.addComment} variant="raised">
                     Post
@@ -55,8 +64,8 @@ const AddComment = (props: AddCommentProps): any => (
 
 interface DelAlertProps {
     openAlert: boolean;
-    closeAlert: (index?: number) => () => void;
-    alertIndex: number;
+    closeAlert: (id?: number) => () => void;
+    alertID: number;
 }
 const DelAlert = (props: DelAlertProps): JSX.Element => (
     <Dialog open={props.openAlert} onClose={props.closeAlert()}>
@@ -66,7 +75,7 @@ const DelAlert = (props: DelAlertProps): JSX.Element => (
         </DialogContent>
         <DialogActions>
             <Button onClick={props.closeAlert()}>Cancel</Button>
-            <Button onClick={props.closeAlert(props.alertIndex)} autoFocus>
+            <Button onClick={props.closeAlert(props.alertID)} autoFocus>
                 Delete
             </Button>
         </DialogActions>
@@ -77,11 +86,32 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
     constructor(props: any) {
         super(props);
         this.state = {
-            comments: ['this is a crazy test', 'Testing text', 'hello hello', 'how are you'],
-            comment: '',
+            comments: [
+                {
+                    id: 0,
+                    author: 'John',
+                    message: 'this is a crazy test',
+                },
+                {
+                    id: 1,
+                    author: 'Jack',
+                    message: 'Testing text',
+                },
+                {
+                    id: 2,
+                    author: 'Lucka',
+                    message: 'hello hello',
+                },
+                {
+                    id: 3,
+                    author: 'Petra',
+                    message: 'how are you',
+                },
+            ],
+            message: '',
             openAdd: false,
             openAlert: false,
-            alertIndex: 0,
+            alertID: 0,
         };
     }
 
@@ -97,16 +127,17 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
         });
     };
 
-    openAlert = (index: number) => () => {
+    // to be fixed with ID input
+    openAlert = (id: number) => () => {
         this.setState({
             openAlert: true,
-            alertIndex: index,
+            alertID: id,
         });
     };
 
-    closeAlert = (index?: number) => () => {
-        if (index !== undefined) {
-            this.handleDel(index);
+    closeAlert = (id?: number) => () => {
+        if (id !== undefined) {
+            this.handleDel(id);
         }
         this.setState({
             openAlert: false,
@@ -115,7 +146,7 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
 
     handleChange = (event: any): void => {
         this.setState({
-            comment: event.target.value,
+            message: event.target.value,
         });
     };
 
@@ -127,18 +158,22 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
     // }
 
     addComment = (): void => {
-        const {comments, comment} = this.state;
-        comments.unshift(comment); // add to the beginning of the array the newest
+        const {comments, message} = this.state;
+        comments.push({
+            id: comments.length ? comments[comments.length - 1].id + 1 : 0,
+            author: 'anonym',
+            message,
+        });
         this.setState({
             comments,
-            comment: '',
+            message: '',
             openAdd: false,
         });
     };
 
-    handleDel = (index: number): void => {
+    handleDel = (id: number): void => {
         const {comments} = this.state;
-        comments.splice(index, 1);
+        comments.splice(comments.findIndex((e) => e.id === id), 1);
         this.setState({
             comments,
         });
@@ -154,13 +189,13 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
                         </Button>
                         {this.state.openAdd ? (
                             <div style={{marginTop: '30px'}}>
-                                <AddComment comment={this.state.comment} handleChange={this.handleChange} addComment={this.addComment} />
+                                <AddComment message={this.state.message} handleChange={this.handleChange} addComment={this.addComment} />
                             </div>
                         ) : null}
                     </div>
                 </ClickAwayListener>
                 <Messages comments={this.state.comments} openAlert={this.openAlert} />
-                <DelAlert openAlert={this.state.openAlert} closeAlert={this.closeAlert} alertIndex={this.state.alertIndex} />
+                <DelAlert openAlert={this.state.openAlert} closeAlert={this.closeAlert} alertID={this.state.alertID} />
             </div>
         );
     }
