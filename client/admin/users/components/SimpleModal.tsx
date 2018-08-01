@@ -6,7 +6,6 @@ import TextField from '../../../../node_modules/@material-ui/core/TextField';
 import Button from '../../../../node_modules/@material-ui/core/Button';
 import {initialState} from './initialState';
 import {styles} from './Styles';
-import {WithAdminProps} from '@client/with';
 
 interface Props {
     readonly isOpen: boolean;
@@ -14,7 +13,7 @@ interface Props {
     readonly id?: number;
 }
 
-type State = Readonly<typeof initialState>;
+type State = typeof initialState;
 
 export class SimpleModal extends React.Component<Props, State> {
     state = initialState;
@@ -22,19 +21,28 @@ export class SimpleModal extends React.Component<Props, State> {
     handleOnChange = (e: any) => {
         this.setState({
             ...this.state,
-            contacts: {
-                ...this.state.contacts,
+            contact: {
+                ...this.state.contact,
+                id: new Date().getTime(),
                 [e.target.name]: e.target.value,
             },
         });
-        // console.log(this.state.contacts);
+        // console.log(this.state.contact);
+    };
+
+    handleOnSave = () => {
+        const contact = this.state.contact;
+        this.setState((prevState) => ({contacts: prevState.contacts, contact}));
+        // console.log(this.state.contact);
+        console.log(this.state.contacts);
+        this.props.handleOnClose();
     };
 
     render() {
         // const indexSearchUser = this.state.contacts.filter((contact) => contact.id !== this.props.id);
         // const indexUser = indexSearchUser.join();
         const {handleOnClose, isOpen} = this.props;
-        const {contacts} = this.state;
+        const {contact} = this.state;
         return (
             <Modal
                 aria-labelledby="simple-modal-title"
@@ -61,7 +69,7 @@ export class SimpleModal extends React.Component<Props, State> {
                             name="firstName"
                             id="name"
                             label="First Name"
-                            value={contacts.firstName}
+                            value={contact.firstName}
                             onChange={this.handleOnChange}
                             margin="normal"
                             required
@@ -71,24 +79,24 @@ export class SimpleModal extends React.Component<Props, State> {
                             name="lastName"
                             id="name"
                             label="Last Name"
-                            value={contacts.lastName}
+                            value={contact.lastName}
                             onChange={this.handleOnChange}
                             margin="normal"
                             required
                         />
                         <br />
-                        <TextField name="email" id="name" label="E-mail" value={contacts.email} onChange={this.handleOnChange} margin="normal" required />
+                        <TextField name="email" id="name" label="E-mail" value={contact.email} onChange={this.handleOnChange} margin="normal" required />
                         <br />
                         <TextField
                             name="phoneNumber"
                             id="name"
                             label="Phone Number"
-                            value={contacts.phoneNumber}
+                            value={contact.phoneNumber}
                             onChange={this.handleOnChange}
                             margin="normal"
                         />
                         <br />
-                        <Button variant="contained" color="primary" mini>
+                        <Button variant="contained" color="primary" mini onClick={this.handleOnSave}>
                             Submit
                         </Button>
                         <Button variant="contained" color="default" mini onClick={handleOnClose} style={styles.button}>

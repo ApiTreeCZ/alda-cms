@@ -1,8 +1,8 @@
 import * as React from 'react';
 import {WithAdminProps} from '@client/with/withAdmin';
 import {Button} from '@material-ui/core';
-import {Add, Delete as DeleteIcon} from '@material-ui/icons';
-import Icon from '@material-ui/core/Icon';
+import {Add} from '@material-ui/icons';
+
 import {SimpleModal} from './SimpleModal';
 import {ContactList} from './ContactList';
 import {initialState} from './initialState';

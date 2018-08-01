@@ -29,7 +29,8 @@ export const initialState = {
             email: 'martina@seznam.cz',
             phoneNumber: 603100800,
         },
-    ] as ContactModel[],
+    ],
+    contact: {} as ContactModel,
     isOpen: false,
     id: '',
 };
