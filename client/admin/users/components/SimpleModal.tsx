@@ -34,7 +34,7 @@ export class SimpleModal extends React.Component<Props, State> {
         const contact = this.state.contact;
         this.setState((prevState) => ({contacts: prevState.contacts, contact}));
         // console.log(this.state.contact);
-        console.log(this.state.contacts);
+        // console.log(this.state.contacts);
         this.props.handleOnClose();
     };
 
