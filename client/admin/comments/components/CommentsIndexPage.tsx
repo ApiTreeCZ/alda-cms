@@ -1,5 +1,17 @@
 import {WithAdminProps} from '@client/with/withAdmin';
-import {Button, ClickAwayListener, Dialog, DialogActions, DialogContent, DialogContentText, DialogTitle, IconButton, Paper, TextField} from '@material-ui/core';
+import {
+    Button,
+    ClickAwayListener,
+    Dialog,
+    DialogActions,
+    DialogContent,
+    DialogContentText,
+    DialogTitle,
+    IconButton,
+    Paper,
+    TextField,
+    Typography,
+} from '@material-ui/core';
 import {RemoveCircle} from '@material-ui/icons';
 import * as React from 'react';
 
@@ -22,26 +34,34 @@ interface MessagesProps {
     openAlert: (index: number) => () => void;
 }
 
-const Messages = (props: MessagesProps): any =>
-    props.comments
+const Messages = (props: MessagesProps): any => {
+    const today: Date = new Date();
+    const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+    const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+    const dateTime = date + ' ' + time;
+
+    return props.comments
         .slice(0)
         .reverse()
         .map((comment: CommentModel, index: number) => (
             <div style={{padding: '15px 10%'}} key={index}>
                 <Paper elevation={5}>
                     <div style={{padding: '20px 20px 20px 20px'}}>
-                        <strong>{comment.author}:</strong>
-                        <br />
-                        {comment.message}
                         <div style={{float: 'right'}}>
-                            <IconButton onClick={props.openAlert(comment.id)} aria-label="Delete">
-                                <RemoveCircle />
-                            </IconButton>
+                            <Typography>
+                                {dateTime}
+                                <IconButton onClick={props.openAlert(comment.id)} aria-label="Delete">
+                                    <RemoveCircle />
+                                </IconButton>
+                            </Typography>
                         </div>
+                        <Typography variant="title">{comment.author}</Typography>
+                        <Typography>{comment.message}</Typography>
                     </div>
                 </Paper>
             </div>
         ));
+};
 
 interface AddCommentProps {
     message: string;
@@ -127,7 +147,6 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
         });
     };
 
-    // to be fixed with ID input
     openAlert = (id: number) => () => {
         this.setState({
             openAlert: true,
