@@ -1,11 +1,3 @@
-export interface ContactModel {
-    id: number;
-    firstName: string;
-    lastName: string;
-    email: string;
-    phoneNumber: number | string;
-}
-
 export const initialState = {
     contacts: [
         {
@@ -29,8 +21,16 @@ export const initialState = {
             email: 'martina@seznam.cz',
             phoneNumber: 603100800,
         },
-    ],
-    contact: {} as ContactModel,
+    ] as ContactModel[],
     isOpen: false,
-    id: '',
+    contact: {} as ContactModel,
+    id: 0,
 };
+
+export interface ContactModel {
+    id: number;
+    firstName: string;
+    lastName: string;
+    email: string;
+    phoneNumber: number | string;
+}
