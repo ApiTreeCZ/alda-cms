@@ -1,24 +1,15 @@
 import {WithAdminProps} from '@client/with/withAdmin';
-import {
-    Button,
-    ClickAwayListener,
-    Dialog,
-    DialogActions,
-    DialogContent,
-    DialogContentText,
-    DialogTitle,
-    IconButton,
-    Paper,
-    TextField,
-    Typography,
-} from '@material-ui/core';
-import {RemoveCircle} from '@material-ui/icons';
+import {Button, ClickAwayListener} from '@material-ui/core';
 import * as React from 'react';
+import {AddComment} from './AddComment';
+import {DelAlert} from './DelAlert';
+import {Messages} from './Messages';
 
-interface CommentModel {
+export interface CommentModel {
     id: number;
     author: string;
     message: string;
+    dateTime: string;
 }
 
 interface State {
@@ -29,79 +20,6 @@ interface State {
     alertID: number;
 }
 
-interface MessagesProps {
-    comments: CommentModel[];
-    openAlert: (index: number) => () => void;
-}
-
-const Messages = (props: MessagesProps): any => {
-    const today: Date = new Date();
-    const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-    const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
-    const dateTime = date + ' ' + time;
-
-    return props.comments
-        .slice(0)
-        .reverse()
-        .map((comment: CommentModel, index: number) => (
-            <div style={{padding: '15px 10%'}} key={index}>
-                <Paper elevation={5}>
-                    <div style={{padding: '20px 20px 20px 20px'}}>
-                        <div style={{float: 'right'}}>
-                            <Typography>
-                                {dateTime}
-                                <IconButton onClick={props.openAlert(comment.id)} aria-label="Delete">
-                                    <RemoveCircle />
-                                </IconButton>
-                            </Typography>
-                        </div>
-                        <Typography variant="title">{comment.author}</Typography>
-                        <Typography>{comment.message}</Typography>
-                    </div>
-                </Paper>
-            </div>
-        ));
-};
-
-interface AddCommentProps {
-    message: string;
-    handleChange: () => void;
-    addComment: () => void;
-}
-
-const AddComment = (props: AddCommentProps): any => (
-    <Paper>
-        <form style={{padding: '20px 30px'}} noValidate autoComplete="off">
-            <TextField name="message" label="Comment here" autoFocus multiline fullWidth value={props.message} onChange={props.handleChange} margin="normal" />
-            <div style={{paddingTop: '20px'}}>
-                <Button onClick={props.addComment} variant="raised">
-                    Post
-                </Button>
-            </div>
-        </form>
-    </Paper>
-);
-
-interface DelAlertProps {
-    openAlert: boolean;
-    closeAlert: (id?: number) => () => void;
-    alertID: number;
-}
-const DelAlert = (props: DelAlertProps): JSX.Element => (
-    <Dialog open={props.openAlert} onClose={props.closeAlert()}>
-        <DialogTitle>{'Are you sure you want to permanently delete this comment?'}</DialogTitle>
-        <DialogContent>
-            <DialogContentText>If you delete this comment, it will be permanently lost. What a shame...</DialogContentText>
-        </DialogContent>
-        <DialogActions>
-            <Button onClick={props.closeAlert()}>Cancel</Button>
-            <Button onClick={props.closeAlert(props.alertID)} autoFocus>
-                Delete
-            </Button>
-        </DialogActions>
-    </Dialog>
-);
-
 export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
     constructor(props: any) {
         super(props);
@@ -111,21 +29,25 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
                     id: 0,
                     author: 'John',
                     message: 'this is a crazy test',
+                    dateTime: '2018-8-4 22:2:26',
                 },
                 {
                     id: 1,
                     author: 'Jack',
                     message: 'Testing text',
+                    dateTime: '2018-8-4 22:2:26',
                 },
                 {
                     id: 2,
                     author: 'Lucka',
                     message: 'hello hello',
+                    dateTime: '2018-8-4 22:2:26',
                 },
                 {
                     id: 3,
                     author: 'Petra',
                     message: 'how are you',
+                    dateTime: '2018-8-4 22:2:26',
                 },
             ],
             message: '',
@@ -169,12 +91,13 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
         });
     };
 
-    // Couldn't get this to work couse of TS :(
-    // handleChange = (name: string): any => (event: any): void => {
-    //     this.setState({
-    //       [name]: event.target.value     // something is wrong here
-    //     });
-    // }
+    getDateTime = (): string => {
+        const today: Date = new Date();
+        const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
+        const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+        const dateTime = date + ' ' + time;
+        return dateTime;
+    };
 
     addComment = (): void => {
         const {comments, message} = this.state;
@@ -182,6 +105,7 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
             id: comments.length ? comments[comments.length - 1].id + 1 : 0,
             author: 'anonym',
             message,
+            dateTime: this.getDateTime(),
         });
         this.setState({
             comments,
@@ -190,9 +114,9 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
         });
     };
 
-    handleDel = (id: number): void => {
+    handleDel = (i: number): void => {
         const {comments} = this.state;
-        comments.splice(comments.findIndex((e) => e.id === id), 1);
+        comments.splice(comments.findIndex(({id}) => id === i), 1);
         this.setState({
             comments,
         });
