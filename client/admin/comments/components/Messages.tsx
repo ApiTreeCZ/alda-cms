@@ -1,6 +1,6 @@
 import {IconButton, Paper, Typography} from '@material-ui/core';
 import {RemoveCircle} from '@material-ui/icons';
-import {CommentModel} from './CommentsIndexPage';
+import {CommentModel} from '../model';
 
 interface MessagesProps {
     comments: CommentModel[];

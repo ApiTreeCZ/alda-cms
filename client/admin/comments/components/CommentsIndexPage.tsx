@@ -1,16 +1,10 @@
 import {WithAdminProps} from '@client/with/withAdmin';
 import {Button, ClickAwayListener} from '@material-ui/core';
 import * as React from 'react';
+import {CommentModel} from '../model';
 import {AddComment} from './AddComment';
 import {DelAlert} from './DelAlert';
 import {Messages} from './Messages';
-
-export interface CommentModel {
-    id: number;
-    author: string;
-    message: string;
-    dateTime: string;
-}
 
 interface State {
     comments: CommentModel[];
@@ -20,41 +14,45 @@ interface State {
     alertID: number;
 }
 
+const data: CommentModel[] = [
+    {
+        id: 0,
+        author: 'John',
+        message: 'this is a crazy test',
+        dateTime: '2018-8-4 22:2:26',
+    },
+    {
+        id: 1,
+        author: 'Jack',
+        message: 'Testing text',
+        dateTime: '2018-8-4 22:2:26',
+    },
+    {
+        id: 2,
+        author: 'Lucka',
+        message: 'hello hello',
+        dateTime: '2018-8-4 22:2:26',
+    },
+    {
+        id: 3,
+        author: 'Petra',
+        message: 'how are you',
+        dateTime: '2018-8-4 22:2:26',
+    },
+];
+
+const initialState: State = {
+    comments: data,
+    message: '',
+    openAdd: false,
+    openAlert: false,
+    alertID: 0,
+};
+
 export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
     constructor(props: any) {
         super(props);
-        this.state = {
-            comments: [
-                {
-                    id: 0,
-                    author: 'John',
-                    message: 'this is a crazy test',
-                    dateTime: '2018-8-4 22:2:26',
-                },
-                {
-                    id: 1,
-                    author: 'Jack',
-                    message: 'Testing text',
-                    dateTime: '2018-8-4 22:2:26',
-                },
-                {
-                    id: 2,
-                    author: 'Lucka',
-                    message: 'hello hello',
-                    dateTime: '2018-8-4 22:2:26',
-                },
-                {
-                    id: 3,
-                    author: 'Petra',
-                    message: 'how are you',
-                    dateTime: '2018-8-4 22:2:26',
-                },
-            ],
-            message: '',
-            openAdd: false,
-            openAlert: false,
-            alertID: 0,
-        };
+        this.state = initialState;
     }
 
     handleClick = () => {
