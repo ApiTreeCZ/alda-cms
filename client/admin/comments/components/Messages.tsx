@@ -1,4 +1,4 @@
-import {IconButton, Paper, Typography} from '@material-ui/core';
+import {IconButton, Paper, Typography, withStyles} from '@material-ui/core';
 import {RemoveCircle} from '@material-ui/icons';
 import {CommentModel} from '../model';
 
@@ -7,18 +7,24 @@ interface MessagesProps {
     openAlert: (index: number) => () => void;
 }
 
-export const Messages = (props: MessagesProps): any => {
-    return props.comments
+const decorate = withStyles(() => ({
+    root: {
+        backgroundColor: 'red',
+    },
+}));
+
+export const Messages = decorate<MessagesProps>(({comments, openAlert, classes}) => {
+    return comments
         .slice(0)
         .reverse()
         .map((comment: CommentModel, index: number) => (
-            <div style={{padding: '15px 10%'}} key={index}>
+            <div className={classes.root} style={{padding: '15px 10%'}} key={index}>
                 <Paper elevation={5}>
                     <div style={{padding: '20px 20px 20px 20px'}}>
                         <div style={{float: 'right'}}>
                             <Typography>
                                 {comment.dateTime}
-                                <IconButton onClick={props.openAlert(comment.id)}>
+                                <IconButton onClick={openAlert(comment.id)}>
                                     <RemoveCircle />
                                 </IconButton>
                             </Typography>
@@ -29,4 +35,4 @@ export const Messages = (props: MessagesProps): any => {
                 </Paper>
             </div>
         ));
-};
+});
