@@ -14,7 +14,7 @@ import {
     IconButton,
     TextField,
     Typography,
-} from '../../../../node_modules/@material-ui/core';
+} from '@material-ui/core';
 import {MoreVert as MoreVertIcon, Delete as DeleteIcon} from '@material-ui/icons';
 
 interface Post {
