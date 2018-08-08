@@ -1,18 +1,21 @@
 import * as React from 'react';
 import {WithAdminProps} from '@client/with/withAdmin';
-import {Add} from '@material-ui/icons';
-import {Button} from '@material-ui/core';
-import {styles} from './Styles';
-import {SimpleModal} from './SimpleModal';
-import {ContactList} from './ContactList';
-import {initialState} from './initialState';
+import {SimpleModal} from '@client/admin/users/components/SimpleModal';
+import {ContactsList} from '@client/admin/users/components/ContactsList';
+import {contactsList, ContactModel} from './model';
+import {AddButton} from './buttons/AddButton';
 
-export class UsersIndexPage extends React.Component<WithAdminProps> {
-    state = initialState;
+interface Props extends WithAdminProps {
+    contacts: ContactModel[];
+}
 
-    componentDidUpdate() {
-        return true;
-    }
+class UsersPage extends React.Component<Props> {
+    state = {
+        contacts: this.props.contacts as ContactModel[],
+        isOpen: false,
+        contact: {} as ContactModel,
+        id: 0,
+    };
 
     handleOnOpen = () => {
         this.setState({isOpen: true});
@@ -27,7 +30,7 @@ export class UsersIndexPage extends React.Component<WithAdminProps> {
         this.setState({contacts, contact: ''});
     };
 
-    handleOnId = (id: number) => () => {
+    handleOnUserId = (id: number) => () => {
         this.setState({id, isOpen: true});
         const user = this.state.contacts.filter((contact) => contact.id === id).find((contact) => contact.id === id);
         this.setState({contact: user});
@@ -57,13 +60,11 @@ export class UsersIndexPage extends React.Component<WithAdminProps> {
     };
 
     render() {
-        const {contacts, isOpen, contact} = this.state;
+        const {isOpen, contact, contacts} = this.state;
         return (
             <>
-                <Button variant="fab" color="primary" aria-label="Add" mini style={styles.button} onClick={this.handleOnOpen}>
-                    <Add />
-                </Button>
-                <ContactList contacts={contacts} deleteContact={this.handleOnDelete} handleOnId={this.handleOnId} />
+                <AddButton handleOnOpen={this.handleOnOpen} />
+                <ContactsList contacts={contacts} deleteContact={this.handleOnDelete} handleOnUserId={this.handleOnUserId} />
                 <SimpleModal
                     isOpen={isOpen}
                     handleOnClose={this.handleOnClose}
@@ -75,3 +76,12 @@ export class UsersIndexPage extends React.Component<WithAdminProps> {
         );
     }
 }
+
+const WithDataComponent = (BaseComponent: React.ComponentType<Props>): any => {
+    const initialState = {
+        contacts: contactsList,
+    };
+    return (props: any) => <BaseComponent {...props} contacts={initialState.contacts} />;
+};
+
+export const UsersIndexPage = WithDataComponent(UsersPage);
