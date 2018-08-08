@@ -50,7 +50,7 @@ const initialState: State = {
 };
 
 export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
-    constructor(props: any) {
+    constructor(props: WithAdminProps) {
         super(props);
         this.state = initialState;
     }
@@ -124,7 +124,7 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
         return (
             <div>
                 <ClickAwayListener onClickAway={this.handleClickAway}>
-                    <div style={{textAlign: 'center', margin: '30px 25% 15px 25%'}}>
+                    <div style={{textAlign: 'center', margin: '30px 25%'}}>
                         <Button onClick={this.handleClick} variant="raised">
                             Add comment
                         </Button>

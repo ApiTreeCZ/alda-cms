@@ -7,32 +7,43 @@ interface MessagesProps {
     openAlert: (index: number) => () => void;
 }
 
-const decorate = withStyles(() => ({
-    root: {
+const styles = {
+    paper: {
         backgroundColor: 'red',
+        margin: '30px 10%',
+        padding: '20px',
     },
-}));
+};
 
-export const Messages = decorate<MessagesProps>(({comments, openAlert, classes}) => {
-    return comments
-        .slice(0)
-        .reverse()
-        .map((comment: CommentModel, index: number) => (
-            <div className={classes.root} style={{padding: '15px 10%'}} key={index}>
-                <Paper elevation={5}>
-                    <div style={{padding: '20px 20px 20px 20px'}}>
-                        <div style={{float: 'right'}}>
-                            <Typography>
-                                {comment.dateTime}
-                                <IconButton onClick={openAlert(comment.id)}>
-                                    <RemoveCircle />
-                                </IconButton>
-                            </Typography>
-                        </div>
+export const Messages = withStyles(styles)<MessagesProps>(({comments, openAlert, classes}) => {
+    return (
+        <div>
+            {comments
+                .slice(0)
+                .reverse()
+                .map((comment: CommentModel, index: number) => (
+                    <Paper className={classes.paper} elevation={5} key={index}>
+                        {/* cssFloat in styles object doesn't work :/ */}
+                        <Typography style={{float: 'right'}}>
+                            {comment.dateTime}
+                            <IconButton onClick={openAlert(comment.id)}>
+                                <RemoveCircle />
+                            </IconButton>
+                        </Typography>
                         <Typography variant="title">{comment.author}</Typography>
                         <Typography>{comment.message}</Typography>
-                    </div>
-                </Paper>
-            </div>
-        ));
+                    </Paper>
+                ))}
+        </div>
+    );
 });
+
+/* 
+Chtěl jsem si vyexportovat komponentu jako
+export {withStyles(styles)(Messages) as Messages},
+líbí se mi to mít takhle na části, chápu ale správně, že důvod proč jsme to tak nedělali, je protože tohle by nás nutilo do interface MessagesProps přidat "classes" s typama pro všechny styly? Což se překvapivě nemusí když ta komponenta jakoby neexistuje a jen se vloží rovnou jako no-name funkce do toho withStyles(styles)?
+
+Mám celkem problém jak číst ten typ v
+withStyles(styles)<MessagesProps>
+Navíc to není to samé jako typ property funkce, která se použije jako property do withStyles(styles).
+*/
