@@ -18,6 +18,7 @@ import {
     SettingsApplications as SettingsApplicationsIcon,
     SupervisedUserCircle as SupervisedUserCircleIcon,
     Web as WebIcon,
+    SettingsInputHdmi as SettingsInputHdmiIcon,
 } from '@material-ui/icons';
 import {Account, Query} from '@graphql-model';
 import {Layout} from '@client/components';
@@ -171,6 +172,7 @@ export const withAdmin = (BaseComponent: React.ComponentType<WithAdminProps> & {
                         <BottomNavigationAction label="Media" icon={<PermMediaIcon />} onClick={this.handleOnClickRoute('/admin/media')} />
                         <BottomNavigationAction label="Pages" icon={<WebIcon />} onClick={this.handleOnClickRoute('/admin/pages')} />
                         <BottomNavigationAction label="Posts" icon={<ArtTrackIcon />} onClick={this.handleOnClickRoute('/admin/posts')} />
+                        <BottomNavigationAction label="Plugins" icon={<SettingsInputHdmiIcon />} onClick={this.handleOnClickRoute('/admin/plugins')} />
                         <BottomNavigationAction label="Settings" icon={<SettingsApplicationsIcon />} onClick={this.handleOnClickRoute('/admin/settings')} />
                     </BottomNavigation>
                 </Layout>
