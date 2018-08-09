@@ -124,15 +124,11 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
         return (
             <div>
                 <ClickAwayListener onClickAway={this.handleClickAway}>
-                    <div style={{textAlign: 'center', margin: '30px 25%'}}>
-                        <Button onClick={this.handleClick} variant="raised">
+                    <div style={{textAlign: 'center'}}>
+                        <Button style={{marginTop: '30px'}} onClick={this.handleClick} variant="raised">
                             Add comment
                         </Button>
-                        {this.state.openAdd ? (
-                            <div style={{marginTop: '30px'}}>
-                                <AddComment message={this.state.message} handleChange={this.handleChange} addComment={this.addComment} />
-                            </div>
-                        ) : null}
+                        {this.state.openAdd ? <AddComment message={this.state.message} handleChange={this.handleChange} addComment={this.addComment} /> : null}
                     </div>
                 </ClickAwayListener>
                 <Messages comments={this.state.comments} openAlert={this.openAlert} />

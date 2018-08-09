@@ -9,24 +9,24 @@ interface MessagesProps {
 
 const styles = {
     paper: {
-        backgroundColor: 'red',
+        backgroundColor: '#FFECB3',
         margin: '30px 10%',
         padding: '20px',
     },
 };
 
-export const Messages = withStyles(styles)<MessagesProps>(({comments, openAlert, classes}) => {
+export const Messages = withStyles(styles)<MessagesProps>((props) => {
     return (
         <div>
-            {comments
+            {props.comments
                 .slice(0)
                 .reverse()
                 .map((comment: CommentModel, index: number) => (
-                    <Paper className={classes.paper} elevation={5} key={index}>
+                    <Paper className={props.classes.paper} elevation={5} key={index}>
                         {/* cssFloat in styles object doesn't work :/ */}
                         <Typography style={{float: 'right'}}>
                             {comment.dateTime}
-                            <IconButton onClick={openAlert(comment.id)}>
+                            <IconButton onClick={props.openAlert(comment.id)}>
                                 <RemoveCircle />
                             </IconButton>
                         </Typography>
