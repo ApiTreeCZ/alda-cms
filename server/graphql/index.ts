@@ -1,11 +1,13 @@
 import {ApolloServer, Config, gql} from 'apollo-server-express';
 import {importSchema} from 'graphql-import';
-import {AccountService} from '../services';
-import {UpdateMeMutationArgs} from '@graphql-model';
+import {AccountService, ExampleService} from '../services';
+import {FindExampleQueryArgs, UpdateMeMutationArgs} from '@graphql-model';
 
-const resolvers = {
+const resolvers: any = {
     Query: {
-        me: (_: any) => AccountService.findLoggedUser(),
+        me: () => AccountService.findLoggedUser(),
+        findExample: (_: any, id: FindExampleQueryArgs) => ExampleService.findById(id),
+        findAllExamples: () => ExampleService.findAll(),
     },
 
     Mutation: {

@@ -4,8 +4,13 @@ import * as NProgress from 'nprogress';
 import {ApolloProvider, compose} from 'react-apollo';
 
 import {withApollo, withIntl, withMaterialUi} from '../client/with';
+import {createStore} from '@client/createStore';
+import {Provider} from 'react-redux';
 
 NProgress.configure({parent: '#loadingContent'});
+
+// tslint:disable-next-line
+const {default: withRedux} = require('next-redux-wrapper');
 
 // tslint:disable-next-line
 const {Container, default: App} = require('next/app');
@@ -48,19 +53,23 @@ class AldaApp extends App {
     }
 
     render() {
-        const {Component, pageProps, apolloClient} = this.props;
+        const {Component, pageProps, apolloClient, store} = this.props;
         return (
             <ApolloProvider client={apolloClient}>
                 <Container>
-                    <Component {...pageProps} />
+                    <Provider store={store}>
+                        <Component {...pageProps} />
+                    </Provider>
                 </Container>
             </ApolloProvider>
         );
     }
 }
 
-export default compose(
-    withApollo,
-    withIntl,
-    withMaterialUi,
-)(AldaApp);
+export default withRedux(createStore)(
+    compose(
+        withApollo,
+        withIntl,
+        withMaterialUi,
+    )(AldaApp),
+);

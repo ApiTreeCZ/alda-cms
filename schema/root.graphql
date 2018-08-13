@@ -1,5 +1,7 @@
 type Query {
     me: Account
+    findExample(id: ID!): Example
+    findAllExamples: [Example]
 }
 
 type Mutation {
@@ -10,6 +12,13 @@ type Account {
     id: ID!
     firstName: String!
     lastName: String!
+}
+
+type Example {
+    id: ID!
+    firstName: String!
+    lastName: String!
+    role: String!
 }
 
 input MeUpdateInput {
