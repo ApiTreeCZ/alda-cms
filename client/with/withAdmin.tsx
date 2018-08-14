@@ -174,6 +174,7 @@ export const withAdmin = (BaseComponent: React.ComponentType<WithAdminProps> & {
                         <BottomNavigationAction label="Posts" icon={<ArtTrackIcon />} onClick={this.handleOnClickRoute('/admin/posts')} />
                         <BottomNavigationAction label="Plugins" icon={<SettingsInputHdmiIcon />} onClick={this.handleOnClickRoute('/admin/plugins')} />
                         <BottomNavigationAction label="Settings" icon={<SettingsApplicationsIcon />} onClick={this.handleOnClickRoute('/admin/settings')} />
+                        <BottomNavigationAction label="Example" icon={<SettingsApplicationsIcon />} onClick={this.handleOnClickRoute('/admin/example')} />
                     </BottomNavigation>
                 </Layout>
             );
