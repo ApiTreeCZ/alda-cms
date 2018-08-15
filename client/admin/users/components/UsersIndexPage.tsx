@@ -2,65 +2,54 @@ import * as React from 'react';
 import {WithAdminProps} from '@client/with/withAdmin';
 import {SimpleModal} from '@client/admin/users/components/SimpleModal';
 import {ContactsList} from '@client/admin/users/components/ContactsList';
-import {contactsList, ContactModel} from './model';
 import {AddButton} from './buttons/AddButton';
+import {ContactsStore} from '../store';
+import {connect} from 'react-redux';
+import {Store} from '@client/Store';
+import {ContactsActionCreator, ContactsAction} from '../actions';
 
-interface Props extends WithAdminProps {
-    contacts: ContactModel[];
+interface OwnProps extends WithAdminProps {}
+
+interface ConnectedState {
+    readonly contacts: ContactsStore;
 }
 
-class UsersPage extends React.Component<Props> {
-    state = {
-        contacts: this.props.contacts as ContactModel[],
-        isOpen: false,
-        contact: {} as ContactModel,
-        id: 0,
-    };
+interface ConnectedDispatch extends ContactsAction {}
 
+type Props = ConnectedState & ConnectedDispatch & OwnProps;
+
+class UsersPage extends React.Component<Props> {
     handleOnOpen = () => {
-        this.setState({isOpen: true});
+        this.props.isOpen();
     };
 
     handleOnClose = () => {
-        this.setState({isOpen: false, contact: ''});
+        this.props.isOpen();
+        this.props.contact();
     };
 
     handleOnDelete = (id: number) => () => {
-        const contacts = [...this.state.contacts.filter((contact) => contact.id !== id)];
-        this.setState({contacts, contact: ''});
+        this.props.deleteContact(id);
     };
 
     handleOnUserId = (id: number) => () => {
-        this.setState({id, isOpen: true});
-        const user = this.state.contacts.filter((contact) => contact.id === id).find((contact) => contact.id === id);
-        this.setState({contact: user});
+        this.props.id(id);
+        this.props.isOpen();
+        this.props.idContact(id);
     };
 
     handleOnChange = (e: any) => {
-        this.setState({
-            contact: {...this.state.contact, [e.target.name]: e.target.value},
-        });
+        this.props.handleOnChange(e);
     };
 
     handleOnSave = () => {
-        const userId = new Date().getMilliseconds();
-        const {contact, id} = this.state;
-        const contactsMap = this.state.contacts.map((user) => (user.id === id ? {...user, ...contact} : user));
-        const contactFilter = contactsMap.filter((contacts) => contacts);
-        if (id > 0) {
-            this.setState({
-                contacts: contactFilter,
-                isOpen: false,
-                contact: '',
-            });
-        }
-        if (id === 0) {
-            this.setState({contacts: [...this.state.contacts, {...contact, id: userId}], isOpen: false, contact: ''});
-        }
+        this.props.saveContact();
     };
 
     render() {
-        const {isOpen, contact, contacts} = this.state;
+        const {
+            contacts: {contacts, isOpen, contact},
+        } = this.props;
         return (
             <>
                 <AddButton handleOnOpen={this.handleOnOpen} />
@@ -77,11 +66,7 @@ class UsersPage extends React.Component<Props> {
     }
 }
 
-const WithDataComponent = (BaseComponent: React.ComponentType<Props>): any => {
-    const initialState = {
-        contacts: contactsList,
-    };
-    return (props: any) => <BaseComponent {...props} contacts={initialState.contacts} />;
-};
-
-export const UsersIndexPage = WithDataComponent(UsersPage);
+export const UsersIndexPage = connect<ConnectedState, ConnectedDispatch, OwnProps, any>(
+    ({contacts}: Store) => ({contacts}),
+    ContactsActionCreator,
+)(UsersPage);
