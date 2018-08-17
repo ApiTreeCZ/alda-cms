@@ -178,7 +178,7 @@ export class PagesIndexPage extends React.Component<WithAdminProps, State> {
         });
     };
 
-    getReadablePageFormat = (format: PageFormat) => {
+    getReadablePageFormat = (format: PageFormat): string => {
         switch (format) {
             case PageFormat.Text:
                 return 'Text';
