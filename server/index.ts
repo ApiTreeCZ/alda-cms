@@ -8,6 +8,7 @@ import * as nextjs from 'next';
 // You cant use TS alias: https://github.com/Microsoft/TypeScript/issues/10866
 import {Lang} from '../shared/Lang';
 import {createApolloServer} from './graphql';
+import {Database} from './database';
 
 // tslint:disable-next-line
 require('dotenv').config();
@@ -42,56 +43,70 @@ const getLocaleDataScript = (locale: string) => {
 // each message description in the source code will be used.
 const getMessages = (locale: string) => require(`${rootDir}/lang/${locale}.json`);
 
-app.prepare().then(() => {
-    const server = express();
+const withLocaleRequest = (req: any): any => {
+    // When you change language other way (with browser settings is now), you must rewrite get locale from client on this code row
+    const locale = accepts(req).language(languages);
+    req.locale = locale;
+    if (locale) {
+        req.localeDataScript = getLocaleDataScript(locale);
+        req.messages = getMessages(locale);
+    }
+    return req;
+};
 
-    createApolloServer().applyMiddleware({app: server});
+app.prepare()
+    .then(async () => {
+        const server = express();
 
-    server.get('/healthz', (_, res) => {
-        // check my health
-        // -> return next(new Error('DB is unreachable'))
-        res.sendStatus(200);
-    });
+        await Database.start();
 
-    server.get('/_info', (_, res) => {
-        const {NODE_ENV, NODE_VERSION, LC_CTYPE, BACKEND_ENDPOINT, BUILD_AUTHOR, BUILD_NUM, BUILD_DATE, K8S_NAMESPACE} = process.env;
-        const {name, version, description, author, homepage, dependencies} = require(`${rootDir}/package.json`);
-        res.json({
-            NAME: name,
-            DESCRIPTION: description,
-            AUTHOR: author,
-            VERSION: version,
-            HOMEPAGE: homepage,
-            BACKEND_ENDPOINT,
-            NODE_ENV,
-            NODE_VERSION,
-            LC_CTYPE,
-            BUILD_AUTHOR,
-            BUILD_NUM,
-            BUILD_DATE,
-            K8S_NAMESPACE,
-            DEPENDENCIES: dependencies,
-            LANG: Lang,
+        createApolloServer().applyMiddleware({app: server});
+
+        server.get('/healthz', (_, res) => {
+            // check my health
+            // -> return next(new Error('DB is unreachable'))
+            res.sendStatus(200);
         });
-    });
 
-    server.get('*', (req: any, res) => {
-        // When you change language other way (with browser settings is now), you must rewrite get locale from client on this code row
-        const locale = accepts(req).language(languages);
-        req.locale = locale;
-        if (locale) {
-            req.localeDataScript = getLocaleDataScript(locale);
-            req.messages = getMessages(locale);
-        }
-        return handle(req, res);
-    });
+        server.get('/_info', (_, res) => {
+            const {NODE_ENV, NODE_VERSION, LC_CTYPE, BACKEND_ENDPOINT, BUILD_AUTHOR, BUILD_NUM, BUILD_DATE, K8S_NAMESPACE} = process.env;
+            const {name, version, description, author, homepage, dependencies} = require(`${rootDir}/package.json`);
+            res.json({
+                NAME: name,
+                DESCRIPTION: description,
+                AUTHOR: author,
+                VERSION: version,
+                HOMEPAGE: homepage,
+                BACKEND_ENDPOINT,
+                NODE_ENV,
+                NODE_VERSION,
+                LC_CTYPE,
+                BUILD_AUTHOR,
+                BUILD_NUM,
+                BUILD_DATE,
+                K8S_NAMESPACE,
+                DEPENDENCIES: dependencies,
+                LANG: Lang,
+            });
+        });
 
-    const PORT = process.env.PORT || 8080;
-    server.listen(PORT, (err: Error) => {
-        if (err) {
-            throw err;
-        }
-        // tslint:disable-next-line
-        console.log(`Server is ready on PORT=${PORT}`);
+        server.get('*', (req: any, res) => {
+            return handle(withLocaleRequest(req), res);
+        });
+
+        const PORT = process.env.PORT || 8080;
+        server.listen(PORT, (err: Error) => {
+            if (err) {
+                throw err;
+            }
+            // tslint:disable-next-line
+            console.log(`Server is ready on PORT=${PORT}`);
+        });
+    })
+    .catch((err) => {
+        // tslint:disable
+        console.error('Application failed!');
+        console.error(err);
+        // tslint:enable
+        process.exit(1);
     });
-});

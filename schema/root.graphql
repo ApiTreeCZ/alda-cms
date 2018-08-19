@@ -2,6 +2,7 @@ type Query {
     me: Account
     findExample(id: ID!): Example
     findAllExamples: [Example]
+    testiks: [Testik!]!
 }
 
 type Mutation {
@@ -25,4 +26,10 @@ input MeUpdateInput {
     id: ID!
     firstName: String
     lastName: String
+}
+
+type Testik {
+    id: ID!
+    title: String!
+    subtitle: String
 }
