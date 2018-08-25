@@ -1,3 +1,4 @@
+import getConfig from 'next/config';
 import {ApolloClient, InMemoryCache} from 'apollo-boost';
 import {createHttpLink} from 'apollo-link-http';
 import {setContext} from 'apollo-link-context';
@@ -13,8 +14,14 @@ if (!process.browser) {
     global.fetch = fetch;
 }
 
+const {publicRuntimeConfig} = getConfig();
+
 const create = (initialState: any, {getToken}: {getToken: () => string}, req?: any) => {
-    const baseUrl = req ? `${req.protocol}://${req.get('Host')}` : '';
+    const baseUrl = publicRuntimeConfig
+        ? `http://localhost:${publicRuntimeConfig.DEV_REMOTE_LOCAL_GRAPHQL_PORT}`
+        : req
+            ? `${req.protocol}://${req.get('Host')}`
+            : '';
     const httpLink = createHttpLink({
         uri: `${baseUrl}/graphql`,
         credentials: 'same-origin',

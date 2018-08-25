@@ -16,11 +16,11 @@ import {
     Menu as MenuIcon,
     PermMedia as PermMediaIcon,
     SettingsApplications as SettingsApplicationsIcon,
+    SettingsInputHdmi as SettingsInputHdmiIcon,
     SupervisedUserCircle as SupervisedUserCircleIcon,
     Web as WebIcon,
-    SettingsInputHdmi as SettingsInputHdmiIcon,
 } from '@material-ui/icons';
-import {Account, Query} from '@graphql-model';
+import {Account} from '@graphql-model';
 import {Layout} from '@client/components';
 
 interface LoggedInUserResponse {
@@ -40,7 +40,7 @@ const checkLoggedIn = (apolloClient: ApolloClient<any>): Promise<Partial<LoggedI
                 }
             `,
         })
-        .then(({data}: ApolloQueryResult<Query>) => {
+        .then(({data}: ApolloQueryResult<any>) => {
             if (!data || !data.me) {
                 throw new Error('User is not logged');
             }

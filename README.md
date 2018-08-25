@@ -23,7 +23,7 @@ npm install
 **Dev rezim:**
 
 ```npm
-npm run dev
+npm run dev:client
 ```
 
 pro server side vyvoj:
@@ -35,7 +35,7 @@ npm run dev:server
 samostatne pregenerovani GraphQL schema:
 
 ```npm
-npm run generate:graphql:json && npm run generate:graphql:typescript
+npm run generate:graphql
 ```
 
 **Produkce:**
@@ -55,6 +55,7 @@ npm run start
 > V projektu vytvorte soubor ".env" a v nem nastavte nasledujici hodnoty
 
 ```
+DEV_REMOTE_LOCAL_GRAPHQL_PORT=9000
 PORT=8080
 
 DATABASE_USER=

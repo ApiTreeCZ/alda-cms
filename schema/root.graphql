@@ -1,12 +1,40 @@
+# import * from "example.graphql"
+
 type Query {
     me: Account
-    findExample(id: ID!): Example
-    findAllExamples: [Example]
-    testiks: [Testik!]!
+    example(id: ID!): Example!
+    examples: [Example!]
+
+    admin: AdminQuery!
 }
 
 type Mutation {
     updateMe(input: MeUpdateInput): Account
+    admin: AdminMutation!
+}
+
+input UserInput {
+    firstName: String!
+    lastName: String!
+}
+
+type AdminMutation {
+    createUser(input: UserInput!): User!
+    updateUser(id: ID!, input: UserInput!): User!
+}
+
+type AdminQuery {
+    users(input: UserQueryInput): [User!]!
+}
+
+type User {
+    id: ID!
+    firstName: String!
+    lastName: String!
+}
+
+input UserQueryInput {
+    firstName: String
 }
 
 type Account {
@@ -15,21 +43,8 @@ type Account {
     lastName: String!
 }
 
-type Example {
-    id: ID!
-    firstName: String!
-    lastName: String!
-    role: String!
-}
-
 input MeUpdateInput {
     id: ID!
     firstName: String
     lastName: String
-}
-
-type Testik {
-    id: ID!
-    title: String!
-    subtitle: String
 }

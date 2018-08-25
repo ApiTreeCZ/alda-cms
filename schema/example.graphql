@@ -1,0 +1,5 @@
+type Example {
+    id: ID!
+    firstName: String!
+    lastName: String!
+}
