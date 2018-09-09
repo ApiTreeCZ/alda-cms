@@ -168,6 +168,7 @@ export const withAdmin = (BaseComponent: React.ComponentType<WithAdminProps> & {
                     <BottomNavigation showLabels style={{position: 'fixed', width: '100%', left: 0, bottom: 0}}>
                         <BottomNavigationAction label="Dashboard" icon={<DashboardIcon />} onClick={this.handleOnClickRoute('/admin/dashboard')} />
                         <BottomNavigationAction label="Users" icon={<SupervisedUserCircleIcon />} onClick={this.handleOnClickRoute('/admin/users')} />
+                        <BottomNavigationAction label="Users 2" icon={<SupervisedUserCircleIcon />} onClick={this.handleOnClickRoute('/admin/users2')} />
                         <BottomNavigationAction label="Comments" icon={<CommentIcon />} onClick={this.handleOnClickRoute('/admin/comments')} />
                         <BottomNavigationAction label="Media" icon={<PermMediaIcon />} onClick={this.handleOnClickRoute('/admin/media')} />
                         <BottomNavigationAction label="Pages" icon={<WebIcon />} onClick={this.handleOnClickRoute('/admin/pages')} />

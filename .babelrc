@@ -3,6 +3,7 @@
         ["module-resolver", {
             "alias": {
                 "@client": "./client",
+                "@graphql-model": "./shared/graphql.ts",
                 "@lang": "./shared/Lang.ts"
             }
         }]

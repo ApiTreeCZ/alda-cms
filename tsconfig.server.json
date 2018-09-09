@@ -4,5 +4,8 @@
         "module": "commonjs",
         "outDir": "dist/"
     },
-    "include": ["server/**/*.ts"]
+    "include": ["server/**/*.ts", "shared/**/*.ts"],
+    "paths": {
+        "@graphql-model": ["./shared/graphql.ts"]
+    }
 }

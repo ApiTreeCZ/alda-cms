@@ -18,7 +18,7 @@
         "typeRoots": ["./node_modules/@types", "./types"],
         "lib": ["dom", "esnext"],
         "paths": {
-            "@graphql-model": ["types/graphql.d.ts"],
+            "@graphql-model": ["shared/graphql.ts"],
             "@client/*": ["client/*"],
             "@lang": ["shared/Lang.ts"]
         }
