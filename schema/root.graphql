@@ -2,6 +2,14 @@ type Query {
     me: Account
     findExample(id: ID!): Example
     findAllExamples: [Example]
+    comments: [Comment]
+}
+
+type Comment {
+    id: ID
+    author: String
+    message: String
+    dateTime: String
 }
 
 type Mutation {
