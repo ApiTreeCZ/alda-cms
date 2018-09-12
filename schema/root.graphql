@@ -14,6 +14,17 @@ type Comment {
 
 type Mutation {
     updateMe(input: MeUpdateInput): Account
+    comment: CommentMutation!
+}
+
+type CommentMutation {
+    addComment(input: CommentInput!): Comment!
+}
+
+input CommentInput {
+    author: String
+    message: String
+    dateTime: String
 }
 
 type Account {

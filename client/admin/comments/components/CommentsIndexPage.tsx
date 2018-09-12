@@ -14,6 +14,8 @@ interface State {
     alertID: number;
 }
 
+// TODO: Change id type to string after getting data from graphql - not sure why number is not possible for id in grapql
+
 const data: CommentModel[] = [
     {
         id: 0,
@@ -90,17 +92,25 @@ export class CommentsIndexPage extends React.Component<WithAdminProps, State> {
     };
 
     getDateTime = (): string => {
+        const fixZero = (s: any): string => {
+            s += '';
+            return s.length < 2 ? '0' + s : s;
+        };
         const today: Date = new Date();
         const date = today.getFullYear() + '-' + (today.getMonth() + 1) + '-' + today.getDate();
-        const time = today.getHours() + ':' + today.getMinutes() + ':' + today.getSeconds();
+        const time = today.getHours() + ':' + fixZero(today.getMinutes()) + ':' + fixZero(today.getSeconds());
         const dateTime = date + ' ' + time;
         return dateTime;
+    };
+
+    getId = (array: any): number => {
+        return array.length ? array[array.length - 1].id + 1 : 0;
     };
 
     addComment = (): void => {
         const {comments, message} = this.state;
         comments.push({
-            id: comments.length ? comments[comments.length - 1].id + 1 : 0,
+            id: this.getId(comments),
             author: 'anonym',
             message,
             dateTime: this.getDateTime(),
