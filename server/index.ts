@@ -8,6 +8,7 @@ import * as nextjs from 'next';
 // You cant use TS alias: https://github.com/Microsoft/TypeScript/issues/10866
 import {Lang} from '../shared/Lang';
 import {createApolloServer} from './graphql';
+import {CommentModel, Database} from './database';
 
 // tslint:disable-next-line
 require('dotenv').config();
@@ -42,8 +43,10 @@ const getLocaleDataScript = (locale: string) => {
 // each message description in the source code will be used.
 const getMessages = (locale: string) => require(`${rootDir}/lang/${locale}.json`);
 
-app.prepare().then(() => {
+app.prepare().then(async () => {
     const server = express();
+
+    await Database.start();
 
     createApolloServer().applyMiddleware({app: server});
 
@@ -51,6 +54,16 @@ app.prepare().then(() => {
         // check my health
         // -> return next(new Error('DB is unreachable'))
         res.sendStatus(200);
+    });
+
+    server.get('/test', async (_, res) => {
+        const model = new CommentModel({id: '123', author: 'John', message: 'a funny server.get message test', dateTime: 'someday'});
+        try {
+            await model.save();
+            res.sendStatus(200);
+        } catch {
+            res.sendStatus(500);
+        }
     });
 
     server.get('/_info', (_, res) => {
