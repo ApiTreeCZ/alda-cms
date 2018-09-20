@@ -1,4 +1,5 @@
 import {Comment} from '@graphql-model';
+import {CommentModel, CommentDocument} from '../database';
 
 export const fakeDatabase: Comment[] = [
     {
@@ -44,5 +45,9 @@ export const getDateTime = (): string => {
 };
 
 export const CommentService = {
-    findAll: (): Comment[] => fakeDatabase,
+    // for the fake DB:
+    // findAll: (): Comment[] => fakeDatabase,
+
+    // for the real DB:
+    findAll: async (): Promise<CommentDocument[]> => await CommentModel.find({}),
 };
