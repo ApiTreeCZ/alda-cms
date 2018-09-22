@@ -1,7 +1,7 @@
 import {ApolloServer, Config, gql} from 'apollo-server-express';
 import {importSchema} from 'graphql-import';
-import {AccountService, ExampleService, CommentService, fakeDatabase, getId, getDateTime} from '../services';
-import {FindExampleQueryArgs, UpdateMeMutationArgs, AddCommentCommentMutationArgs} from '@graphql-model';
+import {AccountService, ExampleService, CommentService} from '../services';
+import {FindExampleQueryArgs, UpdateMeMutationArgs} from '@graphql-model';
 
 const resolvers: any = {
     Query: {
@@ -15,11 +15,7 @@ const resolvers: any = {
         updateMe: (args: UpdateMeMutationArgs) => AccountService.save(args),
         comment: () => {
             return {
-                addComment: (arg: AddCommentCommentMutationArgs) => {
-                    const newUser = {...arg.input, id: '' + getId(fakeDatabase), dateTime: getDateTime()};
-                    fakeDatabase.push(newUser);
-                    return newUser;
-                },
+                addComment: CommentService.addComment,
             };
         },
     },

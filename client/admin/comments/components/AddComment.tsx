@@ -1,5 +1,15 @@
 import {Button, Paper, TextField, LinearProgress} from '@material-ui/core';
 import React from 'react';
+import {Mutation} from 'react-apollo';
+import gql from 'graphql-tag';
+
+const mutation = gql`
+    mutation comment($input: AddCommentCommentMutationArgs!) {
+        addComment(input: $input) {
+            id
+        }
+    }
+`;
 
 interface AddCommentProps {
     message: string;
@@ -7,15 +17,32 @@ interface AddCommentProps {
     addComment: () => void;
 }
 
+// Tady do tý mutace pořád ještě nedostanu tu funkci. addComment pod tim prostě neni
+
 const Component = (props: AddCommentProps): any => (
-    <Paper style={{margin: '30px 25%'}}>
-        <form style={{padding: '20px 30px 30px 30px'}} noValidate autoComplete="off">
-            <TextField name="message" label="Comment here" autoFocus multiline fullWidth value={props.message} onChange={props.handleChange} margin="normal" />
-            <Button style={{marginTop: '30px'}} onClick={props.addComment} variant="raised">
-                Post
-            </Button>
-        </form>
-    </Paper>
+    <Mutation mutation={mutation}>
+        {(data) => {
+            return (
+                <Paper style={{margin: '30px 25%'}}>
+                    <form style={{padding: '20px 30px 30px 30px'}} noValidate autoComplete="off">
+                        <TextField
+                            name="message"
+                            label="Comment here"
+                            autoFocus
+                            multiline
+                            fullWidth
+                            value={props.message}
+                            onChange={props.handleChange}
+                            margin="normal"
+                        />
+                        <Button style={{marginTop: '30px'}} onClick={props.addComment} variant="raised">
+                            Post
+                        </Button>
+                    </form>
+                </Paper>
+            );
+        }}
+    </Mutation>
 );
 
 const withLoading = (BaseComponent: React.ComponentType<AddCommentProps>): React.ComponentClass<AddCommentProps> => {

@@ -1,6 +1,22 @@
-import {IconButton, Paper, Typography, withStyles} from '@material-ui/core';
+import {IconButton, Paper, Typography, withStyles, LinearProgress} from '@material-ui/core';
 import {RemoveCircle} from '@material-ui/icons';
 import {CommentModel} from '../model';
+import {Query as ApolloQuery} from 'react-apollo';
+import {Query} from '@graphql-model';
+import gql from 'graphql-tag';
+
+class CommentQuery extends ApolloQuery<Query> {}
+
+const query = gql`
+    query {
+        comments {
+            id
+            author
+            message
+            dateTime
+        }
+    }
+`;
 
 interface MessagesProps {
     comments: CommentModel[];
@@ -17,24 +33,32 @@ const styles = {
 
 export const Messages = withStyles(styles)<MessagesProps>((props) => {
     return (
-        <div>
-            {props.comments
-                .slice(0)
-                .reverse()
-                .map((comment: CommentModel, index: number) => (
-                    <Paper className={props.classes.paper} elevation={5} key={index}>
-                        {/* cssFloat in styles object doesn't work :/ */}
-                        <Typography style={{float: 'right'}}>
-                            {comment.dateTime}
-                            <IconButton onClick={props.openAlert(comment.id)}>
-                                <RemoveCircle />
-                            </IconButton>
-                        </Typography>
-                        <Typography variant="title">{comment.author}</Typography>
-                        <Typography>{comment.message}</Typography>
-                    </Paper>
-                ))}
-        </div>
+        <CommentQuery query={query}>
+            {({data, loading}) => {
+                if (loading || !data || !data.comments) {
+                    return <LinearProgress />;
+                }
+                return (
+                    // props.comments
+                    data.comments
+                        .slice(0)
+                        .reverse()
+                        .map((comment: any, index: number) => (
+                            <Paper className={props.classes.paper} elevation={5} key={index}>
+                                {/* cssFloat in styles object doesn't work :/ */}
+                                <Typography style={{float: 'right'}}>
+                                    {comment.dateTime}
+                                    <IconButton onClick={props.openAlert(comment.id)}>
+                                        <RemoveCircle />
+                                    </IconButton>
+                                </Typography>
+                                <Typography variant="title">{comment.author}</Typography>
+                                <Typography>{comment.message}</Typography>
+                            </Paper>
+                        ))
+                );
+            }}
+        </CommentQuery>
     );
 });
 

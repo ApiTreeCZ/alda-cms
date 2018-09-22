@@ -24,7 +24,6 @@ type CommentMutation {
 input CommentInput {
     author: String
     message: String
-    dateTime: String
 }
 
 type Account {
