@@ -4,9 +4,11 @@ import {Mutation} from 'react-apollo';
 import gql from 'graphql-tag';
 
 const mutation = gql`
-    mutation comment($input: AddCommentCommentMutationArgs!) {
-        addComment(input: $input) {
-            id
+    mutation addComment($input: CommentInput!) {
+        comment {
+            addComment(input: $input) {
+                id
+            }
         }
     }
 `;
@@ -17,11 +19,13 @@ interface AddCommentProps {
     addComment: () => void;
 }
 
-// Tady do tý mutace pořád ještě nedostanu tu funkci. addComment pod tim prostě neni
+const handleCreate = (create: (arg: any) => Promise<any>, message: string) => () => {
+    create({variables: {input: {author: 'Alex', message}}});
+};
 
 const Component = (props: AddCommentProps): any => (
     <Mutation mutation={mutation}>
-        {(data) => {
+        {(create) => {
             return (
                 <Paper style={{margin: '30px 25%'}}>
                     <form style={{padding: '20px 30px 30px 30px'}} noValidate autoComplete="off">
@@ -35,7 +39,8 @@ const Component = (props: AddCommentProps): any => (
                             onChange={props.handleChange}
                             margin="normal"
                         />
-                        <Button style={{marginTop: '30px'}} onClick={props.addComment} variant="raised">
+                        {/* <Button style={{marginTop: '30px'}} onClick={props.addComment} variant="raised"> */}
+                        <Button style={{marginTop: '30px'}} onClick={handleCreate(create, props.message)} variant="raised">
                             Post
                         </Button>
                     </form>
